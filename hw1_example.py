@@ -62,16 +62,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def on_btn2_1_click(self):
         img2 = cv2.imread('images/M8.jpg') 
         img2 = cv2.cvtColor(img2, cv2.COLOR_RGB2GRAY)
-        cv2.imshow('hi',img2)
-
+        blur = cv2.GaussianBlur(img2,(3,3),0)
+        cv2.imshow('problem 2', blur)
+        
     def on_btn3_1_click(self):
         pass
 
     def on_btn4_1_click(self):
-        pass
+        #load origin pic and convert to gray space
+        img4_1 = cv2.imread('images/QR.png')
+        cv2.imshow('origin', img4_1)
+        img4_1 = cv2.cvtColor(img4_1, cv2.COLOR_RGB2GRAY)
+        ret,dst4_1 = cv2.threshold(img4_1, 80, 255, cv2.THRESH_TOZERO)
+        cv2.imshow('problem 4.1', dst4_1)
 
     def on_btn4_2_click(self):
-        pass
+        #load origin pic and convert to gray space
+        img4_2 = cv2.imread('images/QR.png')
+        cv2.imshow('origin', img4_2)
+        img4_2 = cv2.cvtColor(img4_2, cv2.COLOR_RGB2GRAY)
+        dst4_2 = cv2.adaptiveThreshold(img4_2, 255, cv2.ADAPTIVE_THRESH_MEAN_C, \
+        cv2.THRESH_BINARY, 19, -1)
+        cv2.imshow('problem 4.2', dst4_2)
 
     def on_btn5_1_click(self):
         # edtAngle, edtScale. edtTx, edtTy to access to the ui object
