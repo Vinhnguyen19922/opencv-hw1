@@ -62,11 +62,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def on_btn2_1_click(self):
         img2 = cv2.imread('images/M8.jpg') 
         img2 = cv2.cvtColor(img2, cv2.COLOR_RGB2GRAY)
-        blur = cv2.GaussianBlur(img2,(3,3),0)
-        cv2.imshow('problem 2', blur)
+        gray = cv2.GaussianBlur(img2,(3,3),0)
+        cv2.imshow('problem 2', gray)
         
     def on_btn3_1_click(self):
-        pass
+        img3 = cv2.imread('images/pyramids_Gray.jpg')
+
+        #level 1 gaussian
+        G1 = cv2.GaussianBlur(img3,(5,5),0)
+        G1 = cv2.pyrDown(G1)
+        cv2.imshow('level 1 Gaussian', G1)
+
+        #level 0 laplacian
+        G1_Up = cv2.pyrUp(G1)
+        G1_Up = cv2.GaussianBlur(G1_Up,(5,5),0)
+        L0 = cv2.subtract(img3, G1_Up)
+        cv2.imshow('level 0 Laplace', L0)
+
+        #level 1 inverse
+        G2 = cv2.GaussianBlur(G1, (5,5), 0)
+        G2 = cv2.pyrDown(G2)
+        G2_Up = cv2.pyrUp(G2)
+        G2_Up = cv2.GaussianBlur(G2_Up, (5,5), 0)
+        L1 = cv2.subtract(G1, G2_Up)
+        Inv1 = cv2.add(L1,G2_Up)
+        cv2.imshow('level 1 inverse', Inv1)
+
+        #level 0 inverse
+        Inv1_Up = cv2.pyrUp(Inv1)
+        Inv1_Up = cv2.GaussianBlur(Inv1_Up, (5,5), 0)
+        Inv0 = cv2.add(L0,Inv1_Up)
+        cv2.imshow('level 0 inverse', Inv0)
 
     def on_btn4_1_click(self):
         #load origin pic and convert to gray space
