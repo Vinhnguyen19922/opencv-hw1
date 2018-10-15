@@ -6,6 +6,8 @@ import cv2
 from PyQt5.QtWidgets import QMainWindow, QApplication
 import numpy as np
 
+dst = None
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -63,8 +65,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img2 = cv2.imread('images/M8.jpg') 
         img2 = cv2.cvtColor(img2, cv2.COLOR_RGB2GRAY)
         gray = cv2.GaussianBlur(img2,(3,3),0)
-        cv2.imshow('problem 2', gray)
+        cv2.imshow('Gray image', gray)
+
+        #edge detection
+        x = cv2.Sobel(gray,cv2.CV_16S,1,0)
+        y = cv2.Sobel(gray,cv2.CV_16S,0,1)
+        absX = cv2.convertScaleAbs(x)
+        absY = cv2.convertScaleAbs(y)
+        cv2.imshow("Vertical edges", absX)
+        cv2.imshow("Horizontal edges", absY)
+
+        #magnitude
+        def threshold_f(self):
+            global dst
+            threshold_val = cv2.getTrackbarPos('threshold', 'magnitude')
+            ret, magnitude = cv2.threshold(dst, threshold_val, 255, cv2.THRESH_TOZERO)
+            cv2.imshow("Magnitude_result", magnitude)
         
+        global dst
+        dst = cv2.addWeighted(absX,0.5,absY,0.5,0)
+        cv2.namedWindow('magnitude')
+        cv2.createTrackbar('threshold', 'magnitude', 0, 255, threshold_f)
+        
+        
+
     def on_btn3_1_click(self):
         img3 = cv2.imread('images/pyramids_Gray.jpg')
 
