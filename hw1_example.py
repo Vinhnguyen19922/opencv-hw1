@@ -137,7 +137,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def on_btn5_1_click(self):
         # edtAngle, edtScale. edtTx, edtTy to access to the ui object
-        pass
+        img5_1 = cv2.imread('images/OriginalTransform.png')
+        cv2.imshow('problem 5.1 original', img5_1)
+        row, col, a = img5_1.shape
+
+        angle = 45
+        scale = 0.8
+        tx = 150
+        ty = 50
+        center_x = 130
+        center_y = 125
+
+        M = cv2.getRotationMatrix2D((center_x,center_y),angle,1)
+        trans = cv2.warpAffine(img5_1,M,(col,row))
+
+        trans = cv2.resize(trans,None,fx=0.8, fy=0.8, interpolation = cv2.INTER_CUBIC)
+
+        M = np.float32([[1,0,tx],[0,1,ty]])
+        trans = cv2.warpAffine(trans,M,(col,row))     
+
+        cv2.imshow('problem 5.1 transform', trans)
 
     def on_btn5_2_click(self):
         pass
