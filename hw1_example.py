@@ -7,6 +7,10 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 import numpy as np
 
 dst = None
+click_x = np.array([0,0,0,0],dtype=np.float32)
+click_y = np.array([0,0,0,0],dtype=np.float32)
+countClk = None
+img5_2 = None
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -159,7 +163,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cv2.imshow('problem 5.1 transform', trans)
 
     def on_btn5_2_click(self):
-        pass
+        def mouse_click(event, x, y, flags, param):
+            global click_x
+            global click_y
+            global countClk
+            global img5_2
+            if event == cv2.EVENT_LBUTTONDOWN:
+                print('point {:d} : ({:d},{:d})'.format(countClk+1,x,y))
+                click_x[countClk], click_y[countClk] = x,y
+                countClk = countClk+1
+
+            if countClk == 4:
+                origin_size = np.float32([[click_x[0],click_y[0]],[click_x[1],click_y[1]],[click_x[3],click_y[3]],[click_x[2],click_y[2]]])
+                convert_size = np.float32([[20,20],[450,20],[20,450],[450,450]])
+                M = cv2.getPerspectiveTransform(origin_size,convert_size)
+                result = cv2.warpPerspective(img5_2,M,(450,450))
+                cv2.imshow('problem 5.2 perspective', result)
+                countClk = 0
+
+        global img5_2
+        global countClk
+        countClk = 0
+
+        img5_2 = cv2.imread('images/OriginalPerspective.png')
+        cv2.imshow('problem 5.2 original', img5_2)
+        cv2.setMouseCallback('problem 5.2 original',mouse_click)
 
     ### ### ###
 
